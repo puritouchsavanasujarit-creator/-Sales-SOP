@@ -1,0 +1,8 @@
+{
+  "name": "Remix ระบบประเมินการทำงาน Sales SOP \u0026 วิเคราะห์กราฟคะแนน",
+  "description": "ระบบประเมินผลการทำงานพนักงานขายตามขั้นตอน Sales Flow 10 ขั้นตอน พร้อมระบบให้คะแนน คำนวณเกรด และสรุปผลเป็นกราฟวิเคราะห์รอบด้าน",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

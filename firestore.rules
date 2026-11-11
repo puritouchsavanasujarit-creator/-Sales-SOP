@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Hardened helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // User profile validation
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['uid', 'email'])
+        && data.uid is string && data.uid.size() <= 128
+        && data.email is string && data.email.size() <= 256;
+    }
+
+    // Evaluation record validation
+    function isValidEvaluation(data) {
+      return data.keys().hasAll(['id', 'caseId', 'salesRep', 'totalScore', 'grade'])
+        && data.id is string && data.id.size() <= 128
+        && data.caseId is string && data.caseId.size() <= 64
+        && data.salesRep is string && data.salesRep.size() <= 128
+        && data.totalScore is number && data.totalScore >= 0 && data.totalScore <= 100
+        && data.grade is string && data.grade.size() <= 16;
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create, update: if isOwner(userId) && isValidUserProfile(incoming());
+      allow delete: if false;
+    }
+
+    // Sales SOP Evaluations Collection
+    match /evaluations/{evaluationId} {
+      allow read: if true;
+      allow create: if isValidId(evaluationId) && isValidEvaluation(incoming());
+      allow update: if isValidId(evaluationId) && isValidEvaluation(incoming());
+      allow delete: if isValidId(evaluationId);
+    }
+  }
+}

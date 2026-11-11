@@ -1,0 +1,56 @@
+{
+  "entities": {
+    "Evaluation": {
+      "title": "Evaluation",
+      "description": "Sales SOP evaluation record assessing sales performance across 10 steps.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "caseId": { "type": "string", "maxLength": 64 },
+        "salesRep": { "type": "string", "maxLength": 128 },
+        "date": { "type": "string", "maxLength": 32 },
+        "channel": { "type": "string", "maxLength": 64 },
+        "customerName": { "type": "string", "maxLength": 128 },
+        "productType": { "type": "string", "maxLength": 128 },
+        "orderAmount": { "type": "number" },
+        "totalScore": { "type": "number" },
+        "grade": { "type": "string", "maxLength": 16 },
+        "evaluatorName": { "type": "string", "maxLength": 128 },
+        "notes": { "type": "string", "maxLength": 2048 },
+        "transcriptExcerpt": { "type": "string", "maxLength": 5000 },
+        "detectedMisses": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "stepScores": { "type": "object" },
+        "checkedCriteria": { "type": "object" },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "caseId", "salesRep", "totalScore", "grade"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile authenticated with Google Firebase Auth.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "photoURL": { "type": "string", "maxLength": 1024 },
+        "role": { "type": "string", "maxLength": 32 }
+      },
+      "required": ["uid", "email"]
+    }
+  },
+  "firestore": {
+    "/evaluations/{evaluationId}": {
+      "schema": "Evaluation",
+      "description": "Stores sales process evaluations."
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Stores user profiles."
+    }
+  }
+}
